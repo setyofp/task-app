@@ -1,0 +1,41 @@
+services:
+  express:
+    build: .
+    container_name: express
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - express-mongo
+      - express-redis
+
+  mongo:
+    image: mongo:8
+    container_name: mongo
+    restart: always
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - express-mongo
+
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    networks:
+      - express-redis
+
+networks:
+  express-mongo:
+  express-redis:
+
+volumes:
+  mongo-data:
